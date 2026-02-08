@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarketPlace - Buy & Sell Locally</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --primary: #ff385c;
+            --primary-hover: #d90b3e;
+            --secondary: #222222;
+            --bg-color: #f7f7f7;
+            --card-bg: #ffffff;
+            --text-main: #222222;
+            --text-light: #717171;
+            --border: #dddddd;
+            --shadow: 0 6px 16px rgba(0,0,0,0.12);
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        
+        body { background-color: var(--bg-color); color: var(--text-main); padding-top: 80px; -webkit-font-smoothing: antialiased; }
+        
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        button { cursor: pointer; border: none; outline: none; background: none; }
+
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+        /* --- NAVIGATION --- */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            position: fixed; top: 0; width: 100%; z-index: 1000;
+            padding: 16px 0;
+        }
+
+        .nav-content { display: flex; justify-content: space-between; align-items: center; }
+
+        .logo { color: var(--primary); font-size: 24px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+        
+        .search-bar {
+            display: flex; align-items: center;
+            background: white; border: 1px solid var(--border);
+            border-radius: 50px; padding: 8px 8px 8px 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            width: 40%; transition: var(--transition);
+        }
+        .search-bar:focus-within { box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-color: var(--text-main); }
+        .search-bar input { border: none; flex: 1; outline: none; font-size: 16px; }
+        .search-btn { background: var(--primary); color: white; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; }
+
+        .nav-actions { display: flex; align-items: center; gap: 20px; font-weight: 500; }
+        .nav-item { padding: 8px 16px; border-radius: 20px; transition: var(--transition); }
+        .nav-item:hover { background: #f0f0f0; }
+        
+        .btn-post {
+            background: var(--text-main); color: white; padding: 10px 20px; border-radius: 30px;
+        }
+        .btn-post:hover { background: black; }
+
+        /* --- HERO --- */
+        .hero {
+            background: linear-gradient(135deg, #ff385c 0%, #bd1e59 100%);
+            color: white; padding: 80px 0; text-align: center; margin-bottom: 40px; border-radius: var(--radius);
+        }
+        .hero h1 { font-size: 3rem; margin-bottom: 16px; font-weight: 800; }
+        .hero p { font-size: 1.25rem; opacity: 0.9; margin-bottom: 32px; }
+
+        /* --- CATEGORIES --- */
+        .categories-wrapper { margin-bottom: 40px; overflow-x: auto; padding-bottom: 10px; }
+        .category-list { display: flex; gap: 32px; min-width: max-content; }
+        .category-item { 
+            display: flex; flex-direction: column; align-items: center; gap: 8px; 
+            opacity: 0.7; transition: var(--transition); cursor: pointer; border-bottom: 2px solid transparent; padding-bottom: 8px;
+        }
+        .category-item:hover, .category-item.active { opacity: 1; border-color: var(--text-main); }
+        .category-item i { font-size: 24px; }
+        .category-item span { font-size: 14px; font-weight: 500; }
+
+        /* --- PRODUCT GRID --- */
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .filters select { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); }
+
+        .products-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; padding-bottom: 60px;
+        }
+
+        .card {
+            background: white; border-radius: var(--radius); overflow: hidden;
+            transition: var(--transition); position: relative; cursor: pointer;
+            display: flex; flex-direction: column; height: 100%;
+        }
+        .card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+
+        .card-img-container {
+            position: relative; height: 250px; overflow: hidden; background: #eee;
+        }
+        .card-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+        .card:hover .card-img { transform: scale(1.05); }
+        
+        .card-badge {
+            position: absolute; top: 12px; left: 12px; background: rgba(255,255,255,0.9);
+            padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 700;
+        }
+        
+        .favorite-btn {
+            position: absolute; top: 12px; right: 12px; background: transparent;
+            color: white; font-size: 20px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+            transition: transform 0.2s;
+        }
+        .favorite-btn:hover { transform: scale(1.1); }
+        .favorite-btn.active { color: var(--primary); fill: var(--primary); }
+
+        .card-body { padding: 16px; display: flex; flex-direction: column; flex: 1; }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+        .card-title { font-weight: 600; font-size: 16px; line-height: 1.4; }
+        .card-price { font-weight: 700; font-size: 16px; }
+        .card-desc { color: var(--text-light); font-size: 14px; margin-bottom: 12px; flex-grow: 1; }
+        .card-meta { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--text-light); margin-top: auto; }
+        .seller-info { display: flex; align-items: center; gap: 6px; }
+        .avatar-small { width: 24px; height: 24px; border-radius: 50%; background: var(--secondary); color: white; display: grid; place-items: center; font-size: 10px; }
+
+        /* --- DASHBOARD --- */
+        .dashboard-container { display: none; max-width: 800px; margin: 40px auto; }
+        .profile-header { display: flex; align-items: center; gap: 20px; background: white; padding: 30px; border-radius: var(--radius); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .profile-avatar { width: 80px; height: 80px; background: var(--secondary); color: white; border-radius: 50%; font-size: 32px; display: grid; place-items: center; }
+        .stat-box { display: flex; gap: 30px; margin-top: 10px; }
+        .stat-item strong { display: block; font-size: 20px; color: var(--text-main); }
+        .stat-item span { font-size: 14px; color: var(--text-light); }
+        
+        .tabs { display: flex; gap: 20px; border-bottom: 1px solid var(--border); margin: 30px 0; }
+        .tab-btn { padding: 10px 0; font-weight: 600; color: var(--text-light); border-bottom: 2px solid transparent; transition: var(--transition); }
+        .tab-btn.active { color: var(--text-main); border-color: var(--text-main); }
+        
+        .reset-btn { margin-top: 20px; color: red; font-size: 12px; text-decoration: underline; }
+
+        /* --- MODALS --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 2000; display: none;
+            justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s;
+        }
+        .modal-overlay.open { opacity: 1; }
+        .modal {
+            background: white; width: 100%; max-width: 500px; padding: 30px;
+            border-radius: var(--radius); position: relative; transform: translateY(20px); transition: transform 0.3s;
+            max-height: 90vh; overflow-y: auto;
+        }
+        .modal-overlay.open .modal { transform: translateY(0); }
+        .close-modal { position: absolute; top: 20px; right: 20px; font-size: 20px; cursor: pointer; }
+
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; }
+        .form-control { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 16px; }
+        .form-control:focus { border-color: var(--text-main); }
+        
+        .btn-primary { background: var(--primary); color: white; padding: 14px; border-radius: 8px; width: 100%; font-weight: 600; font-size: 16px; }
+        .btn-primary:hover { background: var(--primary-hover); }
+
+        /* --- TOAST & CHAT --- */
+        .toast {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: #222; color: white; padding: 12px 24px; border-radius: 8px;
+            z-index: 3000; display: none; animation: slideUp 0.3s forwards;
+        }
+        @keyframes slideUp { from { transform: translate(-50%, 20px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+
+        .chat-widget {
+            position: fixed; bottom: 20px; right: 20px; width: 320px; background: white;
+            border-radius: var(--radius); box-shadow: var(--shadow); z-index: 1500;
+            display: none; flex-direction: column; overflow: hidden; border: 1px solid var(--border);
+        }
+        .chat-header { background: var(--primary); color: white; padding: 12px; display: flex; justify-content: space-between; font-weight: 600; }
+        .chat-body { height: 300px; padding: 15px; overflow-y: auto; background: #f9f9f9; display: flex; flex-direction: column; gap: 10px; }
+        .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 14px; }
+        .msg.sent { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .msg.rcvd { background: #e5e5ea; color: black; align-self: flex-start; border-bottom-left-radius: 2px; }
+        .chat-footer { padding: 10px; border-top: 1px solid var(--border); display: flex; gap: 5px; }
+        
+        /* Mobile */
+        @media (max-width: 768px) {
+            .search-bar { display: none; } /* Simplified for mobile */
+            .hero h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container nav-content">
+            <a href="#" onclick="goHome()" class="logo">
+                <i class="fas fa-store"></i> MarketPlace
+            </a>
+            
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search products, brands and more...">
+                <button class="search-btn" onclick="filterProducts()"><i class="fas fa-search"></i></button>
+            </div>
+
+            <div class="nav-actions">
+                <button class="nav-item" onclick="toggleAuth()" id="authBtn">Log In</button>
+                <button class="nav-item" onclick="openDashboard()" id="dashBtn" style="display:none;">Profile</button>
+                <button class="btn-post" onclick="openPostModal()">Post Ad</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" id="mainView">
+        <section class="hero">
+            <div style="max-width: 600px; margin: 0 auto;">
+                <h1>Buy & Sell Locally</h1>
+                <p>The trusted marketplace for your community. Find great deals or turn your clutter into cash today.</p>
+                <button class="btn-post" style="background: white; color: black;" onclick="scrollToProducts()">Browse Items</button>
+            </div>
+        </section>
+
+        <div class="categories-wrapper">
+            <div class="category-list">
+                <div class="category-item active" onclick="setCategory('all', this)">
+                    <i class="fas fa-th-large"></i><span>All</span>
+                </div>
+                <div class="category-item" onclick="setCategory('electronics', this)">
+                    <i class="fas fa-laptop"></i><span>Electronics</span>
+                </div>
+                <div class="category-item" onclick="setCategory('vehicles', this)">
+                    <i class="fas fa-car"></i><span>Vehicles</span>
+                </div>
+                <div class="category-item" onclick="setCategory('furniture', this)">
+                    <i class="fas fa-couch"></i><span>Furniture</span>
+                </div>
+                <div class="category-item" onclick="setCategory('fashion', this)">
+                    <i class="fas fa-tshirt"></i><span>Fashion</span>
+                </div>
+                <div class="category-item" onclick="setCategory('hobbies', this)">
+                    <i class="fas fa-guitar"></i><span>Hobbies</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-header" id="productSection">
+            <h2>Fresh Recommendations</h2>
+            <div class="filters">
+                <select id="sortFilter" onchange="filterProducts()">
+                    <option value="newest">Newest First</option>
+                    <option value="priceLow">Price: Low to High</option>
+                    <option value="priceHigh">Price: High to Low</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="products-grid" id="productsGrid">
+            </div>
+    </div>
+
+    <div class="container dashboard-container" id="dashboardView">
+        <div class="profile-header">
+            <div class="profile-avatar" id="userAvatar">U</div>
+            <div>
+                <h2 id="userName">User Name</h2>
+                <div class="stat-box">
+                    <div class="stat-item"><strong id="dashPostCount">0</strong><span>Listings</span></div>
+                    <div class="stat-item"><strong id="dashFavCount">0</strong><span>Saved</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchDashTab('listings')">My Listings</button>
+            <button class="tab-btn" onclick="switchDashTab('favorites')">Saved Items</button>
+        </div>
+
+        <div class="products-grid" id="dashGrid">
+            </div>
+        
+        <button class="reset-btn" onclick="resetAppData()">Reset App Data (Debug)</button>
+        <button class="btn-primary" style="margin-top: 10px; background: #666;" onclick="logout()">Log Out</button>
+    </div>
+
+    <div class="modal-overlay" id="authModal">
+        <div class="modal">
+            <span class="close-modal" onclick="closeModal('authModal')">&times;</span>
+            <h2 style="margin-bottom: 20px;">Welcome Back</h2>
+            <form onsubmit="handleAuth(event)">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" class="form-control" id="emailInput" required value="user@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-control" value="password123" required>
+                </div>
+                <button type="submit" class="btn-primary">Log In / Register</button>
+            </form>
+            <p style="margin-top: 15px; font-size: 13px; color: #666;">Note: This is a demo. Use any email.</p>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="postModal">
+        <div class="modal">
+            <span class="close-modal" onclick="closeModal('postModal')">&times;</span>
+            <h2 style="margin-bottom: 20px;">Sell an Item</h2>
+            <form onsubmit="handlePost(event)">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" class="form-control" id="postTitle" required>
+                </div>
+                <div class="form-group">
+                    <label>Price ($)</label>
+                    <input type="number" class="form-control" id="postPrice" required>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select class="form-control" id="postCategory">
+                        <option value="electronics">Electronics</option>
+                        <option value="vehicles">Vehicles</option>
+                        <option value="furniture">Furniture</option>
+                        <option value="fashion">Fashion</option>
+                        <option value="hobbies">Hobbies</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Image URL (Optional)</label>
+                    <input type="url" class="form-control" id="postImage" placeholder="https://...">
+                    <small style="color: #666;">Leave empty for a random category image.</small>
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" class="form-control" id="postLocation" required placeholder="City, State">
+                </div>
+                <button type="submit" class="btn-primary">Post Now</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal" id="detailContent">
+            </div>
+    </div>
+
+    <div class="chat-widget" id="chatWidget">
+        <div class="chat-header">
+            <span id="chatPartner">Seller</span>
+            <i class="fas fa-times" style="cursor:pointer" onclick="document.getElementById('chatWidget').style.display='none'"></i>
+        </div>
+        <div class="chat-body" id="chatBody"></div>
+        <div class="chat-footer">
+            <input type="text" id="chatInput" style="flex:1; border:none; outline:none;" placeholder="Type a message...">
+            <button style="color:var(--primary); font-weight:600;" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Action Successful</div>
+
+    <script>
+        // --- STATE & DATA ---
+        let user = JSON.parse(localStorage.getItem('mp_user')) || null;
+        
+        // Initial Sample Data (if local storage is empty)
+        const initialProducts = [
+            { id: 1, title: "MacBook Pro M1", price: 950, category: "electronics", location: "San Francisco, CA", seller: "Dave", date: "2023-11-15", image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca4?auto=format&fit=crop&w=800&q=80" },
+            { id: 2, title: "Vintage Leather Sofa", price: 400, category: "furniture", location: "Austin, TX", seller: "Sarah", date: "2023-11-12", image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80" },
+            { id: 3, title: "2018 Honda Civic", price: 15000, category: "vehicles", location: "New York, NY", seller: "Mike", date: "2023-11-10", image: "https://images.unsplash.com/photo-1606016159991-dfe4f2746ad5?auto=format&fit=crop&w=800&q=80" },
+            { id: 4, title: "Nike Air Jordan 1", price: 220, category: "fashion", location: "Chicago, IL", seller: "Jessica", date: "2023-11-08", image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=800&q=80" },
+            { id: 5, title: "Canon DSLR Camera", price: 600, category: "electronics", location: "Seattle, WA", seller: "Tom", date: "2023-11-05", image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80" },
+            { id: 6, title: "Acoustic Guitar", price: 180, category: "hobbies", location: "Nashville, TN", seller: "Emma", date: "2023-11-01", image: "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?auto=format&fit=crop&w=800&q=80" }
+        ];
+
+        let products = JSON.parse(localStorage.getItem('mp_products')) || initialProducts;
+        let favorites = JSON.parse(localStorage.getItem('mp_favorites')) || [];
+        
+        // --- INIT ---
+        window.addEventListener('DOMContentLoaded', () => {
+            updateUI();
+            filterProducts();
+        });
+
+        // --- CORE FUNCTIONS ---
+        function updateUI() {
+            if(user) {
+                document.getElementById('authBtn').style.display = 'none';
+                document.getElementById('dashBtn').style.display = 'block';
+                document.getElementById('dashBtn').innerText = user.name.split(' ')[0];
+                document.getElementById('userName').innerText = user.name;
+                document.getElementById('userAvatar').innerText = user.name[0].toUpperCase();
+            } else {
+                document.getElementById('authBtn').style.display = 'block';
+                document.getElementById('dashBtn').style.display = 'none';
+            }
+        }
+
+        function filterProducts() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const category = document.querySelector('.category-item.active').innerText.toLowerCase();
+            const sort = document.getElementById('sortFilter').value;
+
+            let filtered = products.filter(p => {
+                const matchSearch = p.title.toLowerCase().includes(search) || p.location.toLowerCase().includes(search);
+                const matchCat = category === 'all' || p.category === category;
+                return matchSearch && matchCat;
+            });
+
+            if (sort === 'priceLow') filtered.sort((a,b) => a.price - b.price);
+            else if (sort === 'priceHigh') filtered.sort((a,b) => b.price - a.price);
+            else filtered.sort((a,b) => new Date(b.date) - new Date(a.date));
+
+            renderGrid(filtered, 'productsGrid');
+        }
+
+        function renderGrid(items, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            if(items.length === 0) {
+                container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #888;">No items found.</div>`;
+                return;
+            }
+
+            items.forEach(p => {
+                const isFav = favorites.includes(p.id);
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="card-img-container" onclick="openDetail(${p.id})">
+                        <img src="${p.image}" class="card-img" alt="${p.title}" onerror="this.src='https://via.placeholder.com/300?text=No+Image'">
+                        <span class="card-badge">${p.category}</span>
+                    </div>
+                    <button class="favorite-btn ${isFav ? 'active' : ''}" onclick="toggleFav(event, ${p.id})">
+                        <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
+                    </button>
+                    <div class="card-body" onclick="openDetail(${p.id})">
+                        <div class="card-header">
+                            <h3 class="card-title">${p.title}</h3>
+                            <span class="card-price">$${p.price.toLocaleString()}</span>
+                        </div>
+                        <div class="card-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> ${p.location}</span>
+                            <div class="seller-info">
+                                <div class="avatar-small">${p.seller[0]}</div>
+                                <span>${p.seller}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // --- AUTH ---
+        function toggleAuth() {
+            document.getElementById('authModal').classList.add('open');
+            document.querySelector('.modal-overlay.open .modal').style.display = 'block';
+        }
+
+        function handleAuth(e) {
+            e.preventDefault();
+            const email = document.getElementById('emailInput').value;
+            user = { name: email.split('@')[0], email: email };
+            localStorage.setItem('mp_user', JSON.stringify(user));
+            closeModal('authModal');
+            updateUI();
+            showToast(`Welcome, ${user.name}!`);
+        }
+
+        function logout() {
+            user = null;
+            localStorage.removeItem('mp_user');
+            goHome();
+            location.reload();
+        }
+
+        // --- POSTING & ACTIONS ---
+        function openPostModal() {
+            if(!user) return toggleAuth();
+            document.getElementById('postModal').classList.add('open');
+        }
+
+        function handlePost(e) {
+            e.preventDefault();
+            
+            // Generate random image based on category if empty
+            let imgUrl = document.getElementById('postImage').value;
+            const cat = document.getElementById('postCategory').value;
+            if(!imgUrl) {
+                const keywords = { electronics: 'tech', vehicles: 'car', furniture: 'interior', fashion: 'clothing', hobbies: 'music' };
+                imgUrl = `https://source.unsplash.com/800x600/?${keywords[cat] || 'object'}`;
+                // Fallback since source.unsplash is deprecated sometimes, using picsum
+                imgUrl = `https://picsum.photos/seed/${Date.now()}/400/300`; 
+            }
+
+            const newProduct = {
+                id: Date.now(),
+                title: document.getElementById('postTitle').value,
+                price: parseFloat(document.getElementById('postPrice').value),
+                category: cat,
+                location: document.getElementById('postLocation').value,
+                seller: user.name,
+                date: new Date().toISOString(),
+                image: imgUrl
+            };
+
+            products.unshift(newProduct);
+            localStorage.setItem('mp_products', JSON.stringify(products));
+            
+            closeModal('postModal');
+            showToast('Listing Posted Successfully!');
+            e.target.reset();
+            filterProducts();
+        }
+
+        function toggleFav(e, id) {
+            e.stopPropagation();
+            if(!user) return toggleAuth();
+
+            if(favorites.includes(id)) {
+                favorites = favorites.filter(fid => fid !== id);
+                showToast('Removed from saved');
+            } else {
+                favorites.push(id);
+                showToast('Saved to favorites');
+            }
+            localStorage.setItem('mp_favorites', JSON.stringify(favorites));
+            
+            // Re-render to update heart icons
+            if(document.getElementById('dashboardView').style.display === 'block') {
+                switchDashTab('favorites'); // Refresh dash if open
+            } else {
+                filterProducts();
+            }
+        }
+
+        // --- NAVIGATION & VIEWS ---
+        function goHome() {
+            document.getElementById('mainView').style.display = 'block';
+            document.getElementById('dashboardView').style.display = 'none';
+            window.scrollTo(0,0);
+        }
+
+        function openDashboard() {
+            document.getElementById('mainView').style.display = 'none';
+            document.getElementById('dashboardView').style.display = 'block';
+            
+            // Update stats
+            const myPosts = products.filter(p => p.seller === user.name);
+            document.getElementById('dashPostCount').innerText = myPosts.length;
+            document.getElementById('dashFavCount').innerText = favorites.length;
+            
+            switchDashTab('listings');
+        }
+
+        function switchDashTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const dashGrid = document.getElementById('dashGrid');
+            if(tab === 'listings') {
+                const myItems = products.filter(p => p.seller === user.name);
+                renderGrid(myItems, 'dashGrid');
+            } else {
+                const favItems = products.filter(p => favorites.includes(p.id));
+                renderGrid(favItems, 'dashGrid');
+            }
+        }
+
+        function setCategory(cat, el) {
+            document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+            filterProducts();
+        }
+
+        function scrollToProducts() {
+            document.getElementById('productSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- MODALS & CHAT ---
+        function openDetail(id) {
+            const p = products.find(x => x.id === id);
+            const content = document.getElementById('detailContent');
+            content.innerHTML = `
+                <span class="close-modal" onclick="closeModal('detailModal')">&times;</span>
+                <div style="display:flex; flex-direction:column; gap:20px;">
+                    <img src="${p.image}" style="width:100%; height:300px; object-fit:cover; border-radius:8px;">
+                    <div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <h2>${p.title}</h2>
+                            <h2 style="color:var(--primary);">$${p.price.toLocaleString()}</h2>
+                        </div>
+                        <p style="color:#666; margin:10px 0;"><i class="fas fa-map-marker-alt"></i> ${p.location} &bull; Listed on ${new Date(p.date).toLocaleDateString()}</p>
+                        <p style="line-height:1.6;">Excellent condition. Great functionality. Contact for more details or to arrange a viewing.</p>
+                        
+                        <div style="margin-top:20px; padding-top:20px; border-top:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
+                            <div class="seller-info">
+                                <div class="profile-avatar" style="width:40px; height:40px; font-size:16px;">${p.seller[0]}</div>
+                                <strong>${p.seller}</strong>
+                            </div>
+                            <button class="btn-primary" style="width:auto;" onclick="startChat('${p.seller}')">Contact Seller</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('detailModal').classList.add('open');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('open');
+        }
+
+        function startChat(sellerName) {
+            if(!user) return toggleAuth();
+            closeModal('detailModal');
+            document.getElementById('chatWidget').style.display = 'flex';
+            document.getElementById('chatPartner').innerText = sellerName;
+            const body = document.getElementById('chatBody');
+            body.innerHTML = `<div class="msg rcvd">Hi! Is this still available?</div>`;
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            if(!input.value.trim()) return;
+            
+            const body = document.getElementById('chatBody');
+            body.innerHTML += `<div class="msg sent">${input.value}</div>`;
+            input.value = '';
+            body.scrollTop = body.scrollHeight;
+
+            // Simulated reply
+            setTimeout(() => {
+                body.innerHTML += `<div class="msg rcvd">Yes, it is! When would you like to meet?</div>`;
+                body.scrollTop = body.scrollHeight;
+            }, 1500);
+        }
+
+        // --- UTILS ---
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 3000);
+        }
+        
+        function resetAppData() {
+            if(confirm("This will delete all your posts and local data. Continue?")) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+        
+        // Close modal on outside click
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                event.target.classList.remove('open');
+            }
+        }
+    </script>
+</body>
+</html>
