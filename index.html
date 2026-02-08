@@ -3,191 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MarketPlace - Buy & Sell Locally</title>
+    <title>BharatBazaar - Buy & Sell India</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- CSS VARIABLES & RESET --- */
+        /* --- VARIABLES & RESET --- */
         :root {
-            --primary: #ff385c;
-            --primary-hover: #d90b3e;
-            --secondary: #222222;
-            --bg-color: #f7f7f7;
-            --card-bg: #ffffff;
-            --text-main: #222222;
-            --text-light: #717171;
-            --border: #dddddd;
-            --shadow: 0 6px 16px rgba(0,0,0,0.12);
+            --primary: #FF6B35; /* Orange */
+            --primary-dark: #e55a2b;
+            --secondary: #2A2D34; /* Dark Gray */
+            --accent: #0096C7; /* Blue */
+            --bg: #F8F9FA;
+            --white: #ffffff;
+            --text-main: #2A2D34;
+            --text-light: #6c757d;
+            --success: #28a745;
+            --border: #e9ecef;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
             --radius: 12px;
             --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        
-        body { background-color: var(--bg-color); color: var(--text-main); padding-top: 80px; -webkit-font-smoothing: antialiased; }
-        
-        a { text-decoration: none; color: inherit; }
+        body { background-color: var(--bg); color: var(--text-main); padding-top: 80px; }
+        a { text-decoration: none; color: inherit; transition: var(--transition); }
+        button { cursor: pointer; border: none; outline: none; font-family: 'Poppins', sans-serif; }
         ul { list-style: none; }
-        button { cursor: pointer; border: none; outline: none; background: none; }
 
-        .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+        /* --- UTILITIES --- */
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
+        .btn { padding: 10px 20px; border-radius: 8px; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; transition: var(--transition); }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3); }
+        .btn-secondary { background: white; border: 1px solid var(--border); color: var(--text-main); }
+        .btn-secondary:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-accent { background: var(--accent); color: white; }
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .badge-new { background: var(--success); color: white; }
 
-        /* --- NAVIGATION --- */
+        /* --- NAVBAR --- */
         .navbar {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border);
             position: fixed; top: 0; width: 100%; z-index: 1000;
-            padding: 16px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 15px 0;
         }
-
         .nav-content { display: flex; justify-content: space-between; align-items: center; }
-
-        .logo { color: var(--primary); font-size: 24px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+        .logo { font-family: 'Poppins', sans-serif; font-size: 24px; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 10px; }
+        .logo span { color: var(--secondary); }
         
         .search-bar {
-            display: flex; align-items: center;
-            background: white; border: 1px solid var(--border);
-            border-radius: 50px; padding: 8px 8px 8px 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-            width: 40%; transition: var(--transition);
+            flex: 0 1 500px; display: flex; align-items: center;
+            background: var(--bg); border-radius: 50px; padding: 5px 5px 5px 20px;
+            border: 1px solid transparent; transition: var(--transition);
         }
-        .search-bar:focus-within { box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-color: var(--text-main); }
-        .search-bar input { border: none; flex: 1; outline: none; font-size: 16px; }
-        .search-btn { background: var(--primary); color: white; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; }
+        .search-bar:focus-within { border-color: var(--primary); background: white; box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.1); }
+        .search-bar input { border: none; background: transparent; flex: 1; outline: none; font-size: 15px; }
+        .search-bar select { border: none; background: transparent; outline: none; font-size: 14px; color: var(--text-light); border-left: 1px solid #ddd; padding-left: 10px; margin-left: 10px; cursor: pointer; }
+        .search-btn { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: white; display: grid; place-items: center; }
 
-        .nav-actions { display: flex; align-items: center; gap: 20px; font-weight: 500; }
-        .nav-item { padding: 8px 16px; border-radius: 20px; transition: var(--transition); }
-        .nav-item:hover { background: #f0f0f0; }
-        
-        .btn-post {
-            background: var(--text-main); color: white; padding: 10px 20px; border-radius: 30px;
-        }
-        .btn-post:hover { background: black; }
+        .nav-actions { display: flex; align-items: center; gap: 20px; }
+        .nav-item { font-weight: 500; font-size: 15px; display: flex; align-items: center; gap: 6px; }
+        .nav-item:hover { color: var(--primary); }
 
         /* --- HERO --- */
         .hero {
-            background: linear-gradient(135deg, #ff385c 0%, #bd1e59 100%);
-            color: white; padding: 80px 0; text-align: center; margin-bottom: 40px; border-radius: var(--radius);
+            background: linear-gradient(135deg, #2A2D34 0%, #1a1c20 100%);
+            color: white; padding: 60px 0; border-radius: var(--radius);
+            margin: 20px 0; position: relative; overflow: hidden;
         }
-        .hero h1 { font-size: 3rem; margin-bottom: 16px; font-weight: 800; }
-        .hero p { font-size: 1.25rem; opacity: 0.9; margin-bottom: 32px; }
+        .hero-content { position: relative; z-index: 2; max-width: 600px; padding-left: 40px; }
+        .hero h1 { font-size: 3rem; margin-bottom: 15px; line-height: 1.2; }
+        .hero p { font-size: 1.1rem; opacity: 0.8; margin-bottom: 30px; }
+        .hero-pattern { position: absolute; right: -50px; bottom: -50px; font-size: 200px; opacity: 0.1; transform: rotate(-15deg); }
 
         /* --- CATEGORIES --- */
-        .categories-wrapper { margin-bottom: 40px; overflow-x: auto; padding-bottom: 10px; }
-        .category-list { display: flex; gap: 32px; min-width: max-content; }
-        .category-item { 
-            display: flex; flex-direction: column; align-items: center; gap: 8px; 
-            opacity: 0.7; transition: var(--transition); cursor: pointer; border-bottom: 2px solid transparent; padding-bottom: 8px;
+        .categories { display: flex; gap: 20px; overflow-x: auto; padding: 20px 0; scrollbar-width: none; }
+        .cat-card {
+            min-width: 120px; background: white; padding: 20px; border-radius: var(--radius);
+            text-align: center; border: 1px solid var(--border); transition: var(--transition); cursor: pointer;
         }
-        .category-item:hover, .category-item.active { opacity: 1; border-color: var(--text-main); }
-        .category-item i { font-size: 24px; }
-        .category-item span { font-size: 14px; font-weight: 500; }
+        .cat-card:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: var(--shadow); }
+        .cat-card i { font-size: 28px; color: var(--primary); margin-bottom: 10px; }
+        .cat-card span { font-weight: 600; font-size: 14px; display: block; }
 
-        /* --- PRODUCT GRID --- */
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-        .filters select { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); }
+        /* --- GRID LAYOUT --- */
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin: 40px 0 20px; }
+        .filters { display: flex; gap: 10px; flex-wrap: wrap; }
+        .filter-select { padding: 8px 12px; border-radius: 8px; border: 1px solid #ddd; outline: none; }
 
-        .products-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; padding-bottom: 60px;
-        }
-
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; }
+        
+        /* --- PRODUCT CARD --- */
         .card {
             background: white; border-radius: var(--radius); overflow: hidden;
-            transition: var(--transition); position: relative; cursor: pointer;
-            display: flex; flex-direction: column; height: 100%;
+            border: 1px solid var(--border); transition: var(--transition); position: relative;
         }
-        .card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+        .card:hover { transform: translateY(-5px); box-shadow: var(--shadow); border-color: rgba(255, 107, 53, 0.3); }
+        .card-img { height: 200px; background: #f1f1f1; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+        .card:hover .card-img img { transform: scale(1.05); }
+        .card-badge { position: absolute; top: 10px; left: 10px; z-index: 2; }
+        .fav-btn {
+            position: absolute; top: 10px; right: 10px; z-index: 2;
+            width: 32px; height: 32px; background: rgba(255,255,255,0.9); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; color: #ccc; transition: 0.2s;
+        }
+        .fav-btn:hover, .fav-btn.active { color: #ff385c; transform: scale(1.1); }
 
-        .card-img-container {
-            position: relative; height: 250px; overflow: hidden; background: #eee;
-        }
-        .card-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
-        .card:hover .card-img { transform: scale(1.05); }
-        
-        .card-badge {
-            position: absolute; top: 12px; left: 12px; background: rgba(255,255,255,0.9);
-            padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 700;
-        }
-        
-        .favorite-btn {
-            position: absolute; top: 12px; right: 12px; background: transparent;
-            color: white; font-size: 20px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
-            transition: transform 0.2s;
-        }
-        .favorite-btn:hover { transform: scale(1.1); }
-        .favorite-btn.active { color: var(--primary); fill: var(--primary); }
-
-        .card-body { padding: 16px; display: flex; flex-direction: column; flex: 1; }
-        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-        .card-title { font-weight: 600; font-size: 16px; line-height: 1.4; }
-        .card-price { font-weight: 700; font-size: 16px; }
-        .card-desc { color: var(--text-light); font-size: 14px; margin-bottom: 12px; flex-grow: 1; }
-        .card-meta { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--text-light); margin-top: auto; }
-        .seller-info { display: flex; align-items: center; gap: 6px; }
-        .avatar-small { width: 24px; height: 24px; border-radius: 50%; background: var(--secondary); color: white; display: grid; place-items: center; font-size: 10px; }
+        .card-body { padding: 15px; }
+        .card-price { font-size: 1.2rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+        .card-old-price { font-size: 0.9rem; color: var(--text-light); text-decoration: line-through; font-weight: 400; }
+        .card-title { font-weight: 600; margin: 8px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-meta { font-size: 13px; color: var(--text-light); display: flex; align-items: center; gap: 5px; margin-bottom: 15px; }
+        .card-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
         /* --- DASHBOARD --- */
-        .dashboard-container { display: none; max-width: 800px; margin: 40px auto; }
-        .profile-header { display: flex; align-items: center; gap: 20px; background: white; padding: 30px; border-radius: var(--radius); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .profile-avatar { width: 80px; height: 80px; background: var(--secondary); color: white; border-radius: 50%; font-size: 32px; display: grid; place-items: center; }
-        .stat-box { display: flex; gap: 30px; margin-top: 10px; }
-        .stat-item strong { display: block; font-size: 20px; color: var(--text-main); }
-        .stat-item span { font-size: 14px; color: var(--text-light); }
+        .dashboard { display: grid; grid-template-columns: 250px 1fr; gap: 30px; margin-top: 30px; display: none; }
+        .sidebar { background: white; padding: 20px; border-radius: var(--radius); height: fit-content; border: 1px solid var(--border); }
+        .user-profile { text-align: center; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #eee; }
+        .user-avatar { width: 80px; height: 80px; background: var(--primary); color: white; border-radius: 50%; display: grid; place-items: center; font-size: 30px; margin: 0 auto 10px; }
+        .menu-link { display: flex; align-items: center; gap: 12px; padding: 12px; color: var(--text-main); border-radius: 8px; cursor: pointer; }
+        .menu-link:hover, .menu-link.active { background: rgba(255, 107, 53, 0.1); color: var(--primary); }
         
-        .tabs { display: flex; gap: 20px; border-bottom: 1px solid var(--border); margin: 30px 0; }
-        .tab-btn { padding: 10px 0; font-weight: 600; color: var(--text-light); border-bottom: 2px solid transparent; transition: var(--transition); }
-        .tab-btn.active { color: var(--text-main); border-color: var(--text-main); }
+        .dash-content { background: white; padding: 30px; border-radius: var(--radius); min-height: 500px; border: 1px solid var(--border); }
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-box { padding: 20px; border-radius: 8px; color: white; }
         
-        .reset-btn { margin-top: 20px; color: red; font-size: 12px; text-decoration: underline; }
-
         /* --- MODALS --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 2000; display: none;
-            justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s;
-        }
-        .modal-overlay.open { opacity: 1; }
         .modal {
-            background: white; width: 100%; max-width: 500px; padding: 30px;
-            border-radius: var(--radius); position: relative; transform: translateY(20px); transition: transform 0.3s;
-            max-height: 90vh; overflow-y: auto;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 2000; display: none;
+            justify-content: center; align-items: center; padding: 20px;
         }
-        .modal-overlay.open .modal { transform: translateY(0); }
-        .close-modal { position: absolute; top: 20px; right: 20px; font-size: 20px; cursor: pointer; }
-
-        .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; }
-        .form-control { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 16px; }
-        .form-control:focus { border-color: var(--text-main); }
+        .modal-content { background: white; padding: 30px; border-radius: var(--radius); width: 100%; max-width: 500px; position: relative; max-height: 90vh; overflow-y: auto; }
+        .close-modal { position: absolute; right: 20px; top: 20px; font-size: 24px; cursor: pointer; color: #666; }
         
-        .btn-primary { background: var(--primary); color: white; padding: 14px; border-radius: 8px; width: 100%; font-weight: 600; font-size: 16px; }
-        .btn-primary:hover { background: var(--primary-hover); }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 500; font-size: 14px; }
+        .form-control { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; outline: none; }
+        .form-control:focus { border-color: var(--primary); }
+        .tabs { display: flex; margin-bottom: 20px; border-bottom: 1px solid #eee; }
+        .tab { flex: 1; padding: 12px; text-align: center; cursor: pointer; font-weight: 600; color: var(--text-light); }
+        .tab.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
 
-        /* --- TOAST & CHAT --- */
-        .toast {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            background: #222; color: white; padding: 12px 24px; border-radius: 8px;
-            z-index: 3000; display: none; animation: slideUp 0.3s forwards;
+        /* --- CHAT & TOAST --- */
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 25px; border-radius: 30px; z-index: 3000; display: none; animation: slideUp 0.3s; }
+        
+        .chat-widget {
+            position: fixed; bottom: 20px; right: 20px; width: 350px; background: white;
+            border-radius: 12px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); z-index: 1500;
+            display: none; flex-direction: column; overflow: hidden;
         }
+        .chat-header { background: var(--primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .chat-body { height: 300px; padding: 15px; overflow-y: auto; background: #f5f5f5; display: flex; flex-direction: column; gap: 10px; }
+        .msg { max-width: 80%; padding: 8px 12px; border-radius: 12px; font-size: 14px; }
+        .msg.sent { align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 2px; }
+        .msg.rcvd { align-self: flex-start; background: white; border-bottom-left-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .chat-footer { padding: 10px; background: white; display: flex; gap: 10px; border-top: 1px solid #eee; }
+
         @keyframes slideUp { from { transform: translate(-50%, 20px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
 
-        .chat-widget {
-            position: fixed; bottom: 20px; right: 20px; width: 320px; background: white;
-            border-radius: var(--radius); box-shadow: var(--shadow); z-index: 1500;
-            display: none; flex-direction: column; overflow: hidden; border: 1px solid var(--border);
-        }
-        .chat-header { background: var(--primary); color: white; padding: 12px; display: flex; justify-content: space-between; font-weight: 600; }
-        .chat-body { height: 300px; padding: 15px; overflow-y: auto; background: #f9f9f9; display: flex; flex-direction: column; gap: 10px; }
-        .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 14px; }
-        .msg.sent { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
-        .msg.rcvd { background: #e5e5ea; color: black; align-self: flex-start; border-bottom-left-radius: 2px; }
-        .chat-footer { padding: 10px; border-top: 1px solid var(--border); display: flex; gap: 5px; }
-        
         /* Mobile */
         @media (max-width: 768px) {
-            .search-bar { display: none; } /* Simplified for mobile */
+            .search-bar { display: none; } /* Hide on mobile for simplicity */
+            .nav-actions span { display: none; } /* Hide text labels */
+            .dashboard { grid-template-columns: 1fr; }
             .hero h1 { font-size: 2rem; }
         }
     </style>
@@ -196,467 +179,593 @@
 
     <nav class="navbar">
         <div class="container nav-content">
-            <a href="#" onclick="goHome()" class="logo">
-                <i class="fas fa-store"></i> MarketPlace
+            <a href="#" onclick="showPage('home')" class="logo">
+                <i class="fas fa-store"></i> Bharat<span>Bazaar</span>
             </a>
-            
+
             <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Search products, brands and more...">
-                <button class="search-btn" onclick="filterProducts()"><i class="fas fa-search"></i></button>
+                <input type="text" id="searchInput" placeholder="Search for products, brands and more...">
+                <select id="cityFilter">
+                    <option value="">All India</option>
+                    <option value="Delhi">Delhi</option>
+                    <option value="Mumbai">Mumbai</option>
+                    <option value="Bangalore">Bangalore</option>
+                    <option value="Hyderabad">Hyderabad</option>
+                </select>
+                <div class="search-btn" onclick="renderProducts()"><i class="fas fa-search"></i></div>
             </div>
 
             <div class="nav-actions">
-                <button class="nav-item" onclick="toggleAuth()" id="authBtn">Log In</button>
-                <button class="nav-item" onclick="openDashboard()" id="dashBtn" style="display:none;">Profile</button>
-                <button class="btn-post" onclick="openPostModal()">Post Ad</button>
+                <a href="#" onclick="showPage('home')" class="nav-item">
+                    <i class="fas fa-home"></i> <span>Home</span>
+                </a>
+                <a href="#" onclick="checkAuth('dashboard')" class="nav-item" id="navProfile">
+                    <i class="fas fa-user"></i> <span>Login</span>
+                </a>
+                <a href="#" onclick="checkAuth('sell')" class="btn btn-primary">
+                    <i class="fas fa-camera"></i> <span>Sell</span>
+                </a>
             </div>
         </div>
     </nav>
 
-    <div class="container" id="mainView">
-        <section class="hero">
-            <div style="max-width: 600px; margin: 0 auto;">
-                <h1>Buy & Sell Locally</h1>
-                <p>The trusted marketplace for your community. Find great deals or turn your clutter into cash today.</p>
-                <button class="btn-post" style="background: white; color: black;" onclick="scrollToProducts()">Browse Items</button>
-            </div>
-        </section>
-
-        <div class="categories-wrapper">
-            <div class="category-list">
-                <div class="category-item active" onclick="setCategory('all', this)">
-                    <i class="fas fa-th-large"></i><span>All</span>
-                </div>
-                <div class="category-item" onclick="setCategory('electronics', this)">
-                    <i class="fas fa-laptop"></i><span>Electronics</span>
-                </div>
-                <div class="category-item" onclick="setCategory('vehicles', this)">
-                    <i class="fas fa-car"></i><span>Vehicles</span>
-                </div>
-                <div class="category-item" onclick="setCategory('furniture', this)">
-                    <i class="fas fa-couch"></i><span>Furniture</span>
-                </div>
-                <div class="category-item" onclick="setCategory('fashion', this)">
-                    <i class="fas fa-tshirt"></i><span>Fashion</span>
-                </div>
-                <div class="category-item" onclick="setCategory('hobbies', this)">
-                    <i class="fas fa-guitar"></i><span>Hobbies</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="section-header" id="productSection">
-            <h2>Fresh Recommendations</h2>
-            <div class="filters">
-                <select id="sortFilter" onchange="filterProducts()">
-                    <option value="newest">Newest First</option>
-                    <option value="priceLow">Price: Low to High</option>
-                    <option value="priceHigh">Price: High to Low</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="products-grid" id="productsGrid">
-            </div>
-    </div>
-
-    <div class="container dashboard-container" id="dashboardView">
-        <div class="profile-header">
-            <div class="profile-avatar" id="userAvatar">U</div>
-            <div>
-                <h2 id="userName">User Name</h2>
-                <div class="stat-box">
-                    <div class="stat-item"><strong id="dashPostCount">0</strong><span>Listings</span></div>
-                    <div class="stat-item"><strong id="dashFavCount">0</strong><span>Saved</span></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchDashTab('listings')">My Listings</button>
-            <button class="tab-btn" onclick="switchDashTab('favorites')">Saved Items</button>
-        </div>
-
-        <div class="products-grid" id="dashGrid">
-            </div>
+    <div class="container">
         
-        <button class="reset-btn" onclick="resetAppData()">Reset App Data (Debug)</button>
-        <button class="btn-primary" style="margin-top: 10px; background: #666;" onclick="logout()">Log Out</button>
+        <div id="homePage">
+            <div class="hero">
+                <i class="fas fa-shopping-bag hero-pattern"></i>
+                <div class="hero-content">
+                    <h1>Buy & Sell Across India</h1>
+                    <p>India's most trusted marketplace. Connect with buyers and sellers in your city safely and securely.</p>
+                    <button class="btn btn-primary" onclick="document.getElementById('productSection').scrollIntoView({behavior:'smooth'})">Explore Products</button>
+                </div>
+            </div>
+
+            <div class="section-header">
+                <h2>Browse Categories</h2>
+            </div>
+            <div class="categories">
+                </div>
+
+            <div class="section-header" id="productSection">
+                <h2>Fresh Recommendations</h2>
+                <div class="filters">
+                    <select class="filter-select" id="sortFilter" onchange="renderProducts()">
+                        <option value="newest">Newest First</option>
+                        <option value="low">Price: Low to High</option>
+                        <option value="high">Price: High to Low</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid" id="productGrid">
+                </div>
+            <div style="text-align: center; padding: 40px;">
+                <button class="btn btn-secondary" onclick="showToast('Loading more products...')">Load More</button>
+            </div>
+        </div>
+
+        <div id="dashboardPage" class="dashboard">
+            <div class="sidebar">
+                <div class="user-profile">
+                    <div class="user-avatar" id="dashAvatar">U</div>
+                    <h3 id="dashName">User Name</h3>
+                    <p id="dashEmail" style="font-size: 13px; color: #666;">user@example.com</p>
+                    <span class="badge badge-new" id="dashRole" style="margin-top:5px; display:inline-block;">Buyer</span>
+                </div>
+                <div class="menu-link active" onclick="switchDashTab('listings')"><i class="fas fa-box"></i> My Listings</div>
+                <div class="menu-link" onclick="switchDashTab('orders')"><i class="fas fa-shopping-bag"></i> My Orders</div>
+                <div class="menu-link" onclick="switchDashTab('wishlist')"><i class="fas fa-heart"></i> Wishlist</div>
+                <div class="menu-link" onclick="logout()" style="color: red; margin-top: 20px;"><i class="fas fa-sign-out-alt"></i> Logout</div>
+            </div>
+
+            <div class="dash-content">
+                <div id="dashListings">
+                    <h3>My Active Listings</h3>
+                    <div class="grid" id="myListingsGrid" style="margin-top: 20px;"></div>
+                </div>
+                <div id="dashOrders" style="display: none;">
+                    <h3>Order History</h3>
+                    <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 15px;" id="ordersList"></div>
+                </div>
+                <div id="dashWishlist" style="display: none;">
+                    <h3>Saved Items</h3>
+                    <div class="grid" id="wishlistGrid" style="margin-top: 20px;"></div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <div class="modal-overlay" id="authModal">
-        <div class="modal">
+    <div class="modal" id="authModal">
+        <div class="modal-content">
             <span class="close-modal" onclick="closeModal('authModal')">&times;</span>
-            <h2 style="margin-bottom: 20px;">Welcome Back</h2>
-            <form onsubmit="handleAuth(event)">
+            <div class="tabs">
+                <div class="tab active" onclick="toggleAuthTab('login')">Login</div>
+                <div class="tab" onclick="toggleAuthTab('register')">Register</div>
+            </div>
+            
+            <form id="loginForm" onsubmit="handleLogin(event)">
                 <div class="form-group">
                     <label>Email</label>
-                    <input type="email" class="form-control" id="emailInput" required value="user@example.com">
+                    <input type="email" class="form-control" id="loginEmail" required value="demo@bharat.com">
                 </div>
                 <div class="form-group">
                     <label>Password</label>
-                    <input type="password" class="form-control" value="password123" required>
+                    <input type="password" class="form-control" required value="123456">
                 </div>
-                <button type="submit" class="btn-primary">Log In / Register</button>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
             </form>
-            <p style="margin-top: 15px; font-size: 13px; color: #666;">Note: This is a demo. Use any email.</p>
+
+            <form id="registerForm" onsubmit="handleRegister(event)" style="display: none;">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" class="form-control" id="regName" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" class="form-control" id="regEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select class="form-control" id="regRole">
+                        <option value="buyer">Buyer</option>
+                        <option value="seller">Seller</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Create Account</button>
+            </form>
         </div>
     </div>
 
-    <div class="modal-overlay" id="postModal">
-        <div class="modal">
-            <span class="close-modal" onclick="closeModal('postModal')">&times;</span>
-            <h2 style="margin-bottom: 20px;">Sell an Item</h2>
-            <form onsubmit="handlePost(event)">
+    <div class="modal" id="sellModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('sellModal')">&times;</span>
+            <h2>Post Your Ad</h2>
+            <form onsubmit="handlePostAd(event)" style="margin-top: 20px;">
                 <div class="form-group">
-                    <label>Title</label>
-                    <input type="text" class="form-control" id="postTitle" required>
+                    <label>Product Title</label>
+                    <input type="text" class="form-control" id="adTitle" required placeholder="e.g. Samsung Galaxy S21">
                 </div>
                 <div class="form-group">
-                    <label>Price ($)</label>
-                    <input type="number" class="form-control" id="postPrice" required>
+                    <label>Price (₹)</label>
+                    <input type="number" class="form-control" id="adPrice" required placeholder="e.g. 25000">
                 </div>
                 <div class="form-group">
                     <label>Category</label>
-                    <select class="form-control" id="postCategory">
-                        <option value="electronics">Electronics</option>
-                        <option value="vehicles">Vehicles</option>
-                        <option value="furniture">Furniture</option>
-                        <option value="fashion">Fashion</option>
-                        <option value="hobbies">Hobbies</option>
+                    <select class="form-control" id="adCategory">
+                        <option value="Mobiles">Mobiles</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Vehicles">Vehicles</option>
+                        <option value="Furniture">Furniture</option>
+                        <option value="Fashion">Fashion</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>City</label>
+                    <select class="form-control" id="adCity">
+                        <option value="Delhi">Delhi</option>
+                        <option value="Mumbai">Mumbai</option>
+                        <option value="Bangalore">Bangalore</option>
+                        <option value="Hyderabad">Hyderabad</option>
+                        <option value="Chennai">Chennai</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>Image URL (Optional)</label>
-                    <input type="url" class="form-control" id="postImage" placeholder="https://...">
-                    <small style="color: #666;">Leave empty for a random category image.</small>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" class="form-control" id="adImage" placeholder="Paste URL or leave empty">
+                        <button type="button" class="btn btn-secondary" onclick="fillRandomImage()">Random</button>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Location</label>
-                    <input type="text" class="form-control" id="postLocation" required placeholder="City, State">
-                </div>
-                <button type="submit" class="btn-primary">Post Now</button>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Post Ad</button>
             </form>
         </div>
     </div>
 
-    <div class="modal-overlay" id="detailModal">
-        <div class="modal" id="detailContent">
+    <div class="modal" id="productModal">
+        <div class="modal-content" id="productModalContent">
             </div>
+    </div>
+
+    <div class="modal" id="paymentModal">
+        <div class="modal-content" style="text-align: center;">
+            <span class="close-modal" onclick="closeModal('paymentModal')">&times;</span>
+            <i class="fas fa-shield-alt" style="font-size: 40px; color: var(--success); margin-bottom: 15px;"></i>
+            <h2>Secure Payment</h2>
+            <div id="paymentSummary" style="background: #f8f9fa; padding: 15px; margin: 20px 0; border-radius: 8px;"></div>
+            
+            <div style="text-align: left; margin-bottom: 20px;">
+                <label style="margin-bottom: 10px; display: block; font-weight: 600;">Choose Method:</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <button class="btn btn-secondary" onclick="confirmOrder('UPI')"><i class="fas fa-mobile-alt"></i> UPI</button>
+                    <button class="btn btn-secondary" onclick="confirmOrder('Card')"><i class="fas fa-credit-card"></i> Card</button>
+                    <button class="btn btn-secondary" onclick="confirmOrder('COD')"><i class="fas fa-money-bill"></i> COD</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="chat-widget" id="chatWidget">
         <div class="chat-header">
-            <span id="chatPartner">Seller</span>
-            <i class="fas fa-times" style="cursor:pointer" onclick="document.getElementById('chatWidget').style.display='none'"></i>
+            <div id="chatUser">Seller</div>
+            <span style="cursor: pointer;" onclick="document.getElementById('chatWidget').style.display='none'">&times;</span>
         </div>
         <div class="chat-body" id="chatBody"></div>
         <div class="chat-footer">
-            <input type="text" id="chatInput" style="flex:1; border:none; outline:none;" placeholder="Type a message...">
-            <button style="color:var(--primary); font-weight:600;" onclick="sendMessage()">Send</button>
+            <input type="text" id="chatInput" placeholder="Type..." style="flex:1; border:none; outline:none;">
+            <button class="btn btn-primary" style="padding: 5px 15px;" onclick="sendMessage()">Send</button>
         </div>
     </div>
 
-    <div class="toast" id="toast">Action Successful</div>
+    <div class="toast" id="toast"></div>
 
     <script>
-        // --- STATE & DATA ---
-        let user = JSON.parse(localStorage.getItem('mp_user')) || null;
-        
-        // Initial Sample Data (if local storage is empty)
-        const initialProducts = [
-            { id: 1, title: "MacBook Pro M1", price: 950, category: "electronics", location: "San Francisco, CA", seller: "Dave", date: "2023-11-15", image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca4?auto=format&fit=crop&w=800&q=80" },
-            { id: 2, title: "Vintage Leather Sofa", price: 400, category: "furniture", location: "Austin, TX", seller: "Sarah", date: "2023-11-12", image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80" },
-            { id: 3, title: "2018 Honda Civic", price: 15000, category: "vehicles", location: "New York, NY", seller: "Mike", date: "2023-11-10", image: "https://images.unsplash.com/photo-1606016159991-dfe4f2746ad5?auto=format&fit=crop&w=800&q=80" },
-            { id: 4, title: "Nike Air Jordan 1", price: 220, category: "fashion", location: "Chicago, IL", seller: "Jessica", date: "2023-11-08", image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=800&q=80" },
-            { id: 5, title: "Canon DSLR Camera", price: 600, category: "electronics", location: "Seattle, WA", seller: "Tom", date: "2023-11-05", image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80" },
-            { id: 6, title: "Acoustic Guitar", price: 180, category: "hobbies", location: "Nashville, TN", seller: "Emma", date: "2023-11-01", image: "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?auto=format&fit=crop&w=800&q=80" }
+        // --- DATA & STATE ---
+        const categories = [
+            { name: "Mobiles", icon: "fa-mobile-alt" },
+            { name: "Electronics", icon: "fa-laptop" },
+            { name: "Vehicles", icon: "fa-car" },
+            { name: "Furniture", icon: "fa-couch" },
+            { name: "Fashion", icon: "fa-tshirt" },
+            { name: "Properties", icon: "fa-home" }
         ];
 
-        let products = JSON.parse(localStorage.getItem('mp_products')) || initialProducts;
-        let favorites = JSON.parse(localStorage.getItem('mp_favorites')) || [];
-        
-        // --- INIT ---
-        window.addEventListener('DOMContentLoaded', () => {
-            updateUI();
-            filterProducts();
+        // Seed Data
+        const seedProducts = [
+            { id: 1, title: "iPhone 13 - 128GB", price: 45000, oldPrice: 52000, category: "Mobiles", location: "Delhi", seller: "Rahul Mobile", date: "2023-10-15", image: "https://placehold.co/600x400/orange/white?text=iPhone" },
+            { id: 2, title: "Royal Enfield Classic 350", price: 150000, oldPrice: 180000, category: "Vehicles", location: "Mumbai", seller: "Amit Kumar", date: "2023-10-12", image: "https://placehold.co/600x400/333/white?text=Bike" },
+            { id: 3, title: "Wooden Sofa Set", price: 12000, oldPrice: 25000, category: "Furniture", location: "Bangalore", seller: "Home Decor", date: "2023-10-10", image: "https://placehold.co/600x400/brown/white?text=Sofa" },
+            { id: 4, title: "Dell XPS Laptop", price: 85000, oldPrice: 110000, category: "Electronics", location: "Hyderabad", seller: "Tech World", date: "2023-10-05", image: "https://placehold.co/600x400/black/white?text=Laptop" },
+        ];
+
+        let state = {
+            user: JSON.parse(localStorage.getItem('bb_user')) || null,
+            products: JSON.parse(localStorage.getItem('bb_products')) || seedProducts,
+            orders: JSON.parse(localStorage.getItem('bb_orders')) || [],
+            wishlist: JSON.parse(localStorage.getItem('bb_wishlist')) || [],
+            activeProduct: null
+        };
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCategories();
+            renderProducts();
+            updateAuthUI();
         });
 
-        // --- CORE FUNCTIONS ---
-        function updateUI() {
-            if(user) {
-                document.getElementById('authBtn').style.display = 'none';
-                document.getElementById('dashBtn').style.display = 'block';
-                document.getElementById('dashBtn').innerText = user.name.split(' ')[0];
-                document.getElementById('userName').innerText = user.name;
-                document.getElementById('userAvatar').innerText = user.name[0].toUpperCase();
-            } else {
-                document.getElementById('authBtn').style.display = 'block';
-                document.getElementById('dashBtn').style.display = 'none';
-            }
+        // --- RENDER FUNCTIONS ---
+        function renderCategories() {
+            const container = document.querySelector('.categories');
+            container.innerHTML = categories.map(c => `
+                <div class="cat-card" onclick="filterByCategory('${c.name}')">
+                    <i class="fas ${c.icon}"></i>
+                    <span>${c.name}</span>
+                </div>
+            `).join('');
         }
 
-        function filterProducts() {
+        function renderProducts(filteredList = null) {
+            let list = filteredList || state.products;
+            
+            // Search & Filter
             const search = document.getElementById('searchInput').value.toLowerCase();
-            const category = document.querySelector('.category-item.active').innerText.toLowerCase();
+            const city = document.getElementById('cityFilter').value;
             const sort = document.getElementById('sortFilter').value;
 
-            let filtered = products.filter(p => {
-                const matchSearch = p.title.toLowerCase().includes(search) || p.location.toLowerCase().includes(search);
-                const matchCat = category === 'all' || p.category === category;
-                return matchSearch && matchCat;
-            });
+            list = list.filter(p => 
+                (p.title.toLowerCase().includes(search) || p.category.toLowerCase().includes(search)) &&
+                (city === "" || p.location === city)
+            );
 
-            if (sort === 'priceLow') filtered.sort((a,b) => a.price - b.price);
-            else if (sort === 'priceHigh') filtered.sort((a,b) => b.price - a.price);
-            else filtered.sort((a,b) => new Date(b.date) - new Date(a.date));
+            if(sort === 'low') list.sort((a,b) => a.price - b.price);
+            if(sort === 'high') list.sort((a,b) => b.price - a.price);
+            if(sort === 'newest') list.sort((a,b) => new Date(b.date) - new Date(a.date));
 
-            renderGrid(filtered, 'productsGrid');
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = list.length ? list.map(createCardHTML).join('') : '<p style="grid-column:1/-1;text-align:center">No products found.</p>';
         }
 
-        function renderGrid(items, containerId) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = '';
-
-            if(items.length === 0) {
-                container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #888;">No items found.</div>`;
-                return;
-            }
-
-            items.forEach(p => {
-                const isFav = favorites.includes(p.id);
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `
-                    <div class="card-img-container" onclick="openDetail(${p.id})">
-                        <img src="${p.image}" class="card-img" alt="${p.title}" onerror="this.src='https://via.placeholder.com/300?text=No+Image'">
-                        <span class="card-badge">${p.category}</span>
-                    </div>
-                    <button class="favorite-btn ${isFav ? 'active' : ''}" onclick="toggleFav(event, ${p.id})">
-                        <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
+        function createCardHTML(p) {
+            const isFav = state.wishlist.includes(p.id);
+            return `
+                <div class="card">
+                    <div class="card-badge badge badge-new">New</div>
+                    <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleWishlist(${p.id})">
+                        <i class="fas fa-heart"></i>
                     </button>
-                    <div class="card-body" onclick="openDetail(${p.id})">
-                        <div class="card-header">
-                            <h3 class="card-title">${p.title}</h3>
-                            <span class="card-price">$${p.price.toLocaleString()}</span>
-                        </div>
-                        <div class="card-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> ${p.location}</span>
-                            <div class="seller-info">
-                                <div class="avatar-small">${p.seller[0]}</div>
-                                <span>${p.seller}</span>
-                            </div>
-                        </div>
+                    <div class="card-img" onclick="openProduct(${p.id})">
+                        <img src="${p.image}" alt="${p.title}">
                     </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        // --- AUTH ---
-        function toggleAuth() {
-            document.getElementById('authModal').classList.add('open');
-            document.querySelector('.modal-overlay.open .modal').style.display = 'block';
-        }
-
-        function handleAuth(e) {
-            e.preventDefault();
-            const email = document.getElementById('emailInput').value;
-            user = { name: email.split('@')[0], email: email };
-            localStorage.setItem('mp_user', JSON.stringify(user));
-            closeModal('authModal');
-            updateUI();
-            showToast(`Welcome, ${user.name}!`);
-        }
-
-        function logout() {
-            user = null;
-            localStorage.removeItem('mp_user');
-            goHome();
-            location.reload();
-        }
-
-        // --- POSTING & ACTIONS ---
-        function openPostModal() {
-            if(!user) return toggleAuth();
-            document.getElementById('postModal').classList.add('open');
-        }
-
-        function handlePost(e) {
-            e.preventDefault();
-            
-            // Generate random image based on category if empty
-            let imgUrl = document.getElementById('postImage').value;
-            const cat = document.getElementById('postCategory').value;
-            if(!imgUrl) {
-                const keywords = { electronics: 'tech', vehicles: 'car', furniture: 'interior', fashion: 'clothing', hobbies: 'music' };
-                imgUrl = `https://source.unsplash.com/800x600/?${keywords[cat] || 'object'}`;
-                // Fallback since source.unsplash is deprecated sometimes, using picsum
-                imgUrl = `https://picsum.photos/seed/${Date.now()}/400/300`; 
-            }
-
-            const newProduct = {
-                id: Date.now(),
-                title: document.getElementById('postTitle').value,
-                price: parseFloat(document.getElementById('postPrice').value),
-                category: cat,
-                location: document.getElementById('postLocation').value,
-                seller: user.name,
-                date: new Date().toISOString(),
-                image: imgUrl
-            };
-
-            products.unshift(newProduct);
-            localStorage.setItem('mp_products', JSON.stringify(products));
-            
-            closeModal('postModal');
-            showToast('Listing Posted Successfully!');
-            e.target.reset();
-            filterProducts();
-        }
-
-        function toggleFav(e, id) {
-            e.stopPropagation();
-            if(!user) return toggleAuth();
-
-            if(favorites.includes(id)) {
-                favorites = favorites.filter(fid => fid !== id);
-                showToast('Removed from saved');
-            } else {
-                favorites.push(id);
-                showToast('Saved to favorites');
-            }
-            localStorage.setItem('mp_favorites', JSON.stringify(favorites));
-            
-            // Re-render to update heart icons
-            if(document.getElementById('dashboardView').style.display === 'block') {
-                switchDashTab('favorites'); // Refresh dash if open
-            } else {
-                filterProducts();
-            }
-        }
-
-        // --- NAVIGATION & VIEWS ---
-        function goHome() {
-            document.getElementById('mainView').style.display = 'block';
-            document.getElementById('dashboardView').style.display = 'none';
-            window.scrollTo(0,0);
-        }
-
-        function openDashboard() {
-            document.getElementById('mainView').style.display = 'none';
-            document.getElementById('dashboardView').style.display = 'block';
-            
-            // Update stats
-            const myPosts = products.filter(p => p.seller === user.name);
-            document.getElementById('dashPostCount').innerText = myPosts.length;
-            document.getElementById('dashFavCount').innerText = favorites.length;
-            
-            switchDashTab('listings');
-        }
-
-        function switchDashTab(tab) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            const dashGrid = document.getElementById('dashGrid');
-            if(tab === 'listings') {
-                const myItems = products.filter(p => p.seller === user.name);
-                renderGrid(myItems, 'dashGrid');
-            } else {
-                const favItems = products.filter(p => favorites.includes(p.id));
-                renderGrid(favItems, 'dashGrid');
-            }
-        }
-
-        function setCategory(cat, el) {
-            document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active'));
-            el.classList.add('active');
-            filterProducts();
-        }
-
-        function scrollToProducts() {
-            document.getElementById('productSection').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // --- MODALS & CHAT ---
-        function openDetail(id) {
-            const p = products.find(x => x.id === id);
-            const content = document.getElementById('detailContent');
-            content.innerHTML = `
-                <span class="close-modal" onclick="closeModal('detailModal')">&times;</span>
-                <div style="display:flex; flex-direction:column; gap:20px;">
-                    <img src="${p.image}" style="width:100%; height:300px; object-fit:cover; border-radius:8px;">
-                    <div>
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <h2>${p.title}</h2>
-                            <h2 style="color:var(--primary);">$${p.price.toLocaleString()}</h2>
+                    <div class="card-body" onclick="openProduct(${p.id})">
+                        <div class="card-price">
+                            ₹${p.price.toLocaleString()} 
+                            ${p.oldPrice ? `<span class="card-old-price">₹${p.oldPrice.toLocaleString()}</span>` : ''}
                         </div>
-                        <p style="color:#666; margin:10px 0;"><i class="fas fa-map-marker-alt"></i> ${p.location} &bull; Listed on ${new Date(p.date).toLocaleDateString()}</p>
-                        <p style="line-height:1.6;">Excellent condition. Great functionality. Contact for more details or to arrange a viewing.</p>
-                        
-                        <div style="margin-top:20px; padding-top:20px; border-top:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
-                            <div class="seller-info">
-                                <div class="profile-avatar" style="width:40px; height:40px; font-size:16px;">${p.seller[0]}</div>
-                                <strong>${p.seller}</strong>
-                            </div>
-                            <button class="btn-primary" style="width:auto;" onclick="startChat('${p.seller}')">Contact Seller</button>
+                        <h3 class="card-title">${p.title}</h3>
+                        <div class="card-meta">
+                            <i class="fas fa-map-marker-alt"></i> ${p.location}
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-secondary" style="width:100%; justify-content:center" onclick="openProduct(${p.id})">View</button>
+                            <button class="btn btn-primary" style="width:100%; justify-content:center" onclick="buyNow(${p.id}); event.stopPropagation()">Buy</button>
                         </div>
                     </div>
                 </div>
             `;
-            document.getElementById('detailModal').classList.add('open');
         }
 
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('open');
+        // --- NAVIGATION ---
+        function showPage(pageId) {
+            document.getElementById('homePage').style.display = pageId === 'home' ? 'block' : 'none';
+            document.getElementById('dashboardPage').style.display = pageId === 'dashboard' ? 'grid' : 'none';
+            window.scrollTo(0,0);
         }
 
-        function startChat(sellerName) {
-            if(!user) return toggleAuth();
-            closeModal('detailModal');
+        function switchDashTab(tab) {
+            // Update Active Link
+            document.querySelectorAll('.menu-link').forEach(el => el.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            // Hide all sections
+            ['dashListings', 'dashOrders', 'dashWishlist'].forEach(id => document.getElementById(id).style.display = 'none');
+
+            // Logic
+            if(tab === 'listings') {
+                document.getElementById('dashListings').style.display = 'block';
+                const myList = state.products.filter(p => p.seller === state.user.name);
+                document.getElementById('myListingsGrid').innerHTML = myList.length ? myList.map(createCardHTML).join('') : '<p>No listings yet.</p>';
+            } else if (tab === 'orders') {
+                document.getElementById('dashOrders').style.display = 'block';
+                const myOrders = state.orders.filter(o => o.buyer === state.user.name);
+                document.getElementById('ordersList').innerHTML = myOrders.length ? myOrders.map(o => `
+                    <div style="border:1px solid #eee; padding:15px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <strong>${o.item}</strong><br>
+                            <span style="font-size:12px; color:#666">Order ID: #${o.id} • ${o.date}</span>
+                        </div>
+                        <div style="text-align:right">
+                            <strong style="color:var(--primary)">₹${o.amount.toLocaleString()}</strong><br>
+                            <span class="badge badge-new" style="background:${o.status === 'Delivered' ? 'green' : 'orange'}">${o.status}</span>
+                        </div>
+                    </div>
+                `).join('') : '<p>No orders yet.</p>';
+            } else if (tab === 'wishlist') {
+                document.getElementById('dashWishlist').style.display = 'block';
+                const myFavs = state.products.filter(p => state.wishlist.includes(p.id));
+                document.getElementById('wishlistGrid').innerHTML = myFavs.length ? myFavs.map(createCardHTML).join('') : '<p>No saved items.</p>';
+            }
+        }
+
+        // --- AUTH LOGIC ---
+        function checkAuth(action) {
+            if (state.user) {
+                if (action === 'sell') openModal('sellModal');
+                if (action === 'dashboard') {
+                    showPage('dashboard');
+                    switchDashTab('listings');
+                }
+            } else {
+                openModal('authModal');
+            }
+        }
+
+        function toggleAuthTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+            document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            // Simulated login
+            state.user = { name: email.split('@')[0], email: email, role: 'buyer' };
+            saveState();
+            updateAuthUI();
+            closeModal('authModal');
+            showToast('Logged In Successfully');
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const role = document.getElementById('regRole').value;
+            state.user = { name: name, email: email, role: role };
+            saveState();
+            updateAuthUI();
+            closeModal('authModal');
+            showToast('Account Created!');
+        }
+
+        function logout() {
+            state.user = null;
+            saveState();
+            updateAuthUI();
+            showPage('home');
+            showToast('Logged Out');
+        }
+
+        function updateAuthUI() {
+            const navProfile = document.getElementById('navProfile');
+            if (state.user) {
+                navProfile.innerHTML = `<i class="fas fa-user-circle"></i> <span>${state.user.name}</span>`;
+                // Update Dashboard Sidebar
+                document.getElementById('dashName').innerText = state.user.name;
+                document.getElementById('dashEmail').innerText = state.user.email;
+                document.getElementById('dashRole').innerText = state.user.role.toUpperCase();
+                document.getElementById('dashAvatar').innerText = state.user.name[0].toUpperCase();
+            } else {
+                navProfile.innerHTML = `<i class="fas fa-user"></i> <span>Login</span>`;
+            }
+        }
+
+        // --- PRODUCT ACTIONS ---
+        function openProduct(id) {
+            const p = state.products.find(x => x.id === id);
+            state.activeProduct = p;
+            const html = `
+                <span class="close-modal" onclick="closeModal('productModal')">&times;</span>
+                <div style="display:flex; flex-wrap:wrap; gap:30px;">
+                    <div style="flex:1; min-width:300px;">
+                        <img src="${p.image}" style="width:100%; border-radius:12px; object-fit:cover;">
+                    </div>
+                    <div style="flex:1; min-width:300px;">
+                        <h2 style="font-size:24px; margin-bottom:10px;">${p.title}</h2>
+                        <h1 style="color:var(--primary); margin-bottom:20px;">₹${p.price.toLocaleString()}</h1>
+                        
+                        <div style="background:#f8f9fa; padding:15px; border-radius:8px; margin-bottom:20px;">
+                            <p><strong>Category:</strong> ${p.category}</p>
+                            <p><strong>Location:</strong> ${p.location}</p>
+                            <p><strong>Seller:</strong> ${p.seller}</p>
+                            <p><strong>Posted:</strong> ${p.date}</p>
+                        </div>
+                        
+                        <p style="color:#555; line-height:1.6; margin-bottom:20px;">
+                            This is a verified product in excellent condition. Please contact the seller for more details or click Buy Now to secure it immediately.
+                        </p>
+
+                        <div style="display:flex; gap:10px;">
+                            <button class="btn btn-primary" onclick="buyNow(${p.id}); closeModal('productModal')">Buy Now</button>
+                            <button class="btn btn-secondary" onclick="openChat('${p.seller}')">Chat w/ Seller</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('productModalContent').innerHTML = html;
+            openModal('productModal');
+        }
+
+        function buyNow(id) {
+            if(!state.user) return openModal('authModal');
+            state.activeProduct = state.products.find(x => x.id === id);
+            
+            const summary = `
+                <p style="font-size:18px;"><strong>${state.activeProduct.title}</strong></p>
+                <hr style="margin:10px 0; border:0; border-top:1px solid #ddd;">
+                <div style="display:flex; justify-content:space-between;">
+                    <span>Price</span> <span>₹${state.activeProduct.price.toLocaleString()}</span>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                    <span>Delivery</span> <span>₹99</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-top:10px; font-weight:700; font-size:18px;">
+                    <span>Total</span> <span>₹${(state.activeProduct.price + 99).toLocaleString()}</span>
+                </div>
+            `;
+            document.getElementById('paymentSummary').innerHTML = summary;
+            openModal('paymentModal');
+        }
+
+        function confirmOrder(method) {
+            const order = {
+                id: Date.now(),
+                item: state.activeProduct.title,
+                amount: state.activeProduct.price + 99,
+                date: new Date().toLocaleDateString(),
+                buyer: state.user.name,
+                status: method === 'COD' ? 'Pending' : 'Confirmed'
+            };
+            state.orders.unshift(order);
+            saveState();
+            closeModal('paymentModal');
+            showToast('Order Placed Successfully!');
+            setTimeout(() => {
+                showPage('dashboard');
+                switchDashTab('orders');
+            }, 1000);
+        }
+
+        function handlePostAd(e) {
+            e.preventDefault();
+            if(!state.user) return openModal('authModal');
+
+            const p = {
+                id: Date.now(),
+                title: document.getElementById('adTitle').value,
+                price: parseInt(document.getElementById('adPrice').value),
+                category: document.getElementById('adCategory').value,
+                location: document.getElementById('adCity').value,
+                image: document.getElementById('adImage').value || `https://placehold.co/600x400/orange/white?text=${document.getElementById('adCategory').value}`,
+                seller: state.user.name,
+                date: new Date().toISOString().split('T')[0]
+            };
+
+            state.products.unshift(p);
+            saveState();
+            closeModal('sellModal');
+            showToast('Ad Posted Successfully!');
+            renderProducts();
+            e.target.reset();
+        }
+
+        function fillRandomImage() {
+            const cat = document.getElementById('adCategory').value;
+            document.getElementById('adImage').value = `https://placehold.co/600x400/0096C7/white?text=${cat}`;
+        }
+
+        function toggleWishlist(id) {
+            if(!state.user) return openModal('authModal');
+            if(state.wishlist.includes(id)) {
+                state.wishlist = state.wishlist.filter(x => x !== id);
+                showToast('Removed from Wishlist');
+            } else {
+                state.wishlist.push(id);
+                showToast('Added to Wishlist');
+            }
+            saveState();
+            renderProducts(); // Re-render to update icon
+            if(document.getElementById('dashboardPage').style.display === 'grid') switchDashTab('wishlist');
+        }
+
+        // --- CHAT ---
+        function openChat(seller) {
+            if(!state.user) return openModal('authModal');
+            closeModal('productModal');
             document.getElementById('chatWidget').style.display = 'flex';
-            document.getElementById('chatPartner').innerText = sellerName;
-            const body = document.getElementById('chatBody');
-            body.innerHTML = `<div class="msg rcvd">Hi! Is this still available?</div>`;
+            document.getElementById('chatUser').innerText = seller;
+            document.getElementById('chatBody').innerHTML = `<div class="msg rcvd">Hi! Interested in your item.</div>`;
         }
 
         function sendMessage() {
             const input = document.getElementById('chatInput');
             if(!input.value.trim()) return;
-            
             const body = document.getElementById('chatBody');
             body.innerHTML += `<div class="msg sent">${input.value}</div>`;
             input.value = '';
             body.scrollTop = body.scrollHeight;
-
-            // Simulated reply
+            
             setTimeout(() => {
-                body.innerHTML += `<div class="msg rcvd">Yes, it is! When would you like to meet?</div>`;
+                body.innerHTML += `<div class="msg rcvd">Thanks for the message! Is it still available?</div>`;
                 body.scrollTop = body.scrollHeight;
-            }, 1500);
+            }, 1000);
         }
 
-        // --- UTILS ---
+        // --- HELPERS ---
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function saveState() {
+            localStorage.setItem('bb_user', JSON.stringify(state.user));
+            localStorage.setItem('bb_products', JSON.stringify(state.products));
+            localStorage.setItem('bb_orders', JSON.stringify(state.orders));
+            localStorage.setItem('bb_wishlist', JSON.stringify(state.wishlist));
+        }
         function showToast(msg) {
             const t = document.getElementById('toast');
             t.innerText = msg;
             t.style.display = 'block';
             setTimeout(() => t.style.display = 'none', 3000);
         }
-        
-        function resetAppData() {
-            if(confirm("This will delete all your posts and local data. Continue?")) {
-                localStorage.clear();
-                location.reload();
-            }
-        }
-        
-        // Close modal on outside click
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal-overlay')) {
-                event.target.classList.remove('open');
-            }
+        function filterByCategory(cat) {
+            const list = state.products.filter(p => p.category === cat);
+            renderProducts(list);
+            document.getElementById('productSection').scrollIntoView({behavior:'smooth'});
         }
     </script>
 </body>
